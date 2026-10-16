@@ -1,21 +1,36 @@
 pipeline {
-    agent {
-        node {
-            label 'any'
-        }
-    }
+    agent any
 
     stages {
         stage('Build') {
-            // Original build steps
+            steps {
+                echo 'Building Java application'
+                sh 'mvn -B clean package -DskipTests'
+            }
         }
 
         stage('Test') {
-            // Original test steps
+            steps {
+                echo 'Running Maven tests'
+                sh 'mvn -B test'
+            }
         }
 
         stage('Deploy') {
-            // Original deployment steps
+            steps {
+                echo 'Checking Ansible installation'
+                sh 'ansible --version'
+                sh 'ansible-playbook --version'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed. Check Console Output.'
         }
     }
 }
