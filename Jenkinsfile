@@ -1,30 +1,23 @@
 pipeline {
-  agent any
+    agent any
 
-  }
-  stages {
-    stage('Build') {
-      steps {
-        sh 'mvn clean install'
-        sh 'cp ./target/test-1.0-SNAPSHOT-jar-with-dependencies.jar /tmp'
-      }
+    stages {
+        stage('Check Jenkins') {
+            steps {
+                echo 'Jenkins pipeline is working!'
+            }
+        }
+
+        stage('Check Java') {
+            steps {
+                sh 'java -version'
+            }
+        }
+
+        stage('Check Ansible') {
+            steps {
+                sh 'ansible --version'
+            }
+        }
     }
-
-    stage('Test') {
-      steps {
-        ansiblePlaybook(playbook: 'ansible/java-app-setup.yml', inventory: 'ansible/hosts', limit: 'localhost', vaultCredentialsId: "java-app-vault")
-        sh 'mvn test "-Dtestcase/test=Test.Runner"'
-        archiveArtifacts 'testcase/target/surefire-reports/*html'
-        ansiblePlaybook(playbook: 'ansible/java-app-reset.yml', inventory: 'ansible/hosts', limit: 'localhost', vaultCredentialsId: "java-app-vault")
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        ansiblePlaybook(playbook: 'ansible/java-app-setup.yml', inventory: 'ansible/hosts', limit: 'production', vaultCredentialsId: "java-app-vault")
-        input 'Finished using mvn-app?'
-        ansiblePlaybook(playbook: 'ansible/java-app-reset.yml', inventory: 'ansible/hosts', limit: 'production', vaultCredentialsId: "java-app-vault")
-      }
-    }
-
-  }
+}
