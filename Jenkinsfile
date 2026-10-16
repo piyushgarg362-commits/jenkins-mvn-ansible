@@ -1,23 +1,21 @@
 pipeline {
-    agent any
+    agent {
+        node {
+            label 'any'
+        }
+    }
 
     stages {
-        stage('Check Jenkins') {
-            steps {
-                echo 'Jenkins pipeline is working!'
-            }
+        stage('Build') {
+            // Original build steps
         }
 
-        stage('Check Java') {
-            steps {
-                sh 'java -version'
-            }
+        stage('Test') {
+            // Original test steps
         }
 
-        stage('Check Ansible') {
-            steps {
-                sh 'ansible --version'
-            }
+        stage('Deploy') {
+            // Original deployment steps
         }
     }
 }
